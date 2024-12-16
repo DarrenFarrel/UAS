@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title>Entry User Baru</title>
+    </head>
+    <body class="bg-gray-100 min-h-screen">
+        <header class="bg-black p-4 fixed top-0 left-0 w-full z-50">
+            <nav class="flex justify-end">
+                <ul class="flex space-x-4">
+                    <li><a href="detailresi.html" class="text-white hover:bg-white hover:text-black p-2 rounded">Detail Resi</a></li>
+                    <li><a href="edit.html" class="text-white hover:bg-white hover:text-black p-2 rounded">User Admin</a></li>
+                    <li><a href="logout.html" class="text-white hover:bg-white hover:text-black p-2 rounded">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="bg-gray-100 min-h-screen flex items-center justify-center pt-20">
+            <div class="bg-white border-2 border-black p-8 rounded shadow-md w-full max-w-md">
+                <h1 class="text-2xl font-bold mb-6 text-center">Entry User Baru</h1>
+                <form id="registerForm" action="register.php" method="POST" class="space-y-4">
+                    <div>
+                        <label for="username" class="block font-semibold mb-1">Username:</label>
+                        <input type="text" id="username" name="username" required class="w-full p-2 border rounded">
+                        <div class="text-red-500 text-sm mt-1" id="errorMessageUsername"></div>
+                    </div>
+    
+                    <div>
+                        <label for="nama_admin" class="block font-semibold mb-1">Nama Admin:</label>
+                        <input type="text" id="nama_admin" name="nama_admin" required class="w-full p-2 border rounded">
+                        <div class="text-red-500 text-sm mt-1" id="errorMessageNamaAdmin"></div>
+                    </div>
+    
+                    <div>
+                        <label for="password" class="block font-semibold mb-1">Password:</label>
+                        <input type="password" id="password" name="password" required class="w-full p-2 border rounded">
+                        <div class="text-red-500 text-sm mt-1" id="errorMessagePassword"></div>
+                    </div>
+    
+                    <button type="submit" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600 disabled:bg-gray-300" id="orderButton" disabled>Submit</button>
+                </form>
+            </div>
+        </main>
+    
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const formInputs = document.querySelectorAll('#registerForm input');
+                const orderButton = document.getElementById('orderButton');
+    
+                function validateForm() {
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    const namaAdmin = document.getElementById('nama_admin').value;
+    
+                    let valid = true;
+    
+                    if (username.trim() === "") {
+                        document.getElementById('errorMessageUsername').innerText = "Username must be filled!";
+                        valid = false;
+                    } else {
+                        document.getElementById('errorMessageUsername').innerText = "";
+                    }
+    
+                    if (namaAdmin.trim() === "") {
+                        document.getElementById('errorMessageNamaAdmin').innerText = "Nama Admin must be filled!";
+                        valid = false;
+                    } else {
+                        document.getElementById('errorMessageNamaAdmin').innerText = "";
+                    }
+    
+                    if (password.trim() === "") {
+                        document.getElementById('errorMessagePassword').innerText = "Password must be filled!";
+                        valid = false;
+                    } else if (password.length < 8) {
+                        document.getElementById('errorMessagePassword').innerText = "Password must be at least 8 characters!";
+                        valid = false;
+                    } else {
+                        document.getElementById('errorMessagePassword').innerText = "";
+                    }
+    
+                    orderButton.disabled = !valid;
+                }
+    
+                formInputs.forEach(input => {
+                    input.addEventListener('input', validateForm);
+                });
+    
+                validateForm();
+            });
+        </script>
+
+    <style>
+
+    .register-section {
+    border: 2px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 90%; 
+    max-width: 500px; 
+    margin: 20px auto;
+    box-sizing: border-box;
+    }
+
+    .register-button:disabled {
+    background-color: #d3d3d3;  
+    cursor: not-allowed;        
+    }
+
+
+    .register-section h1 {
+    color: black;
+    margin-bottom: 20px;
+    }
+
+    .register-section label {
+    display: block;
+    margin-bottom: 5px;
+    color: black;
+    font-weight: bold;
+    }
+
+    .register-section input {
+    width: 100%; 
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    }
+
+    .register-section button {
+    width: 100%; 
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #8a2e2e;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+    }
+
+    .register-section button:hover {
+    background-color: black;
+    color: white;
+    }
+
+    .register-section input,
+    .register-section select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    }
+
+    .errorMsg {
+    color: red;
+    margin-top: -10px; 
+    margin-bottom: 10px;
+    font-size: 14px;
+    }
+
+    </style>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title>Entry User Baru</title>
+    </head>
+    <body class="bg-gray-100 min-h-screen">
+        <header class="bg-black p-4 fixed top-0 left-0 w-full z-50">
+            <nav class="flex justify-end">
+                <ul class="flex space-x-4">
+                    <li><a href="detailresi.html" class="text-white hover:bg-white hover:text-black p-2 rounded">Detail Resi</a></li>
+                    <li><a href="edit.html" class="text-white hover:bg-white hover:text-black p-2 rounded">User Admin</a></li>
+                    <li><a href="logout.html" class="text-white hover:bg-white hover:text-black p-2 rounded">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+    
+        <main class="pt-20 p-8">
+            <section class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto">
+                <h1 class="text-2xl font-bold mb-4">Entry User Baru</h1>
+                <form id="registerForm" action="edit.php" method="POST">
+                    <label for="username" class="block font-semibold mb-1">Username:</label>
+                    <input type="text" id="username" name="username" required class="w-full p-2 mb-4 border rounded">
+    
+                    <label for="nama_admin" class="block font-semibold mb-1">Nama Admin:</label>
+                    <input type="text" id="nama_admin" name="nama_admin" required class="w-full p-2 mb-4 border rounded">
+    
+                    <label for="password" class="block font-semibold mb-1">Password:</label>
+                    <input type="password" id="password" name="password" required class="w-full p-2 mb-4 border rounded">
+    
+                    <button type="submit" class="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600 disabled:bg-gray-300" id="orderButton" disabled>Edit</button>
+                </form>
+            </section>
+        </main>
+    <script>
+             document.addEventListener('DOMContentLoaded', () => {
+    const formInputs = document.querySelectorAll('#registerForm input');
+    const orderButton = document.getElementById('orderButton');
+
+    function validateForm() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const namaAdmin = document.getElementById('nama_admin').value;
+
+        let valid = true;
+
+        if (username.trim() === "") {
+            document.getElementById('errorMessageUsername').innerHTML = "Username must be filled!";
+            valid = false;
+        } else {
+            document.getElementById('errorMessageUsername').innerHTML = "";
+        }
+
+        if (namaAdmin.trim() === "") {
+            document.getElementById('errorMessageNamaAdmin').innerHTML = "Nama Admin must be filled!";
+            valid = false;
+        } else {
+            document.getElementById('errorMessageNamaAdmin').innerHTML = "";
+        }
+
+        if (password.trim() === "") {
+            document.getElementById('errorMessagePassword').innerHTML = "Password must be filled!";
+            valid = false;
+        } else if (password.length < 8) {
+            document.getElementById('errorMessagePassword').innerHTML = "Password must be at least 8 characters!";
+            valid = false;
+        } else {
+            document.getElementById('errorMessagePassword').innerHTML = "";
+        }
+
+        orderButton.disabled = !valid;
+        return valid;
+    }
+
+    formInputs.forEach(input => {
+        input.addEventListener('input', validateForm);
+    });
+
+    validateForm();
+});
+
+    </script>
+    <style>
+        nav {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+    padding-bottom: 1%;
+    margin-top: 0;
+    background-color: black;
+}
+
+nav ul {
+    background-color: black;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    background-color: black;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+nav ul li a {
+    background-color: black;
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: white;
+    color: black;
+}
+
+header {
+    background-color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-left: 12px;
+    padding-right: 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 50;
+}
+
+.register-section {
+    border: 2px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 90%; 
+    max-width: 500px; 
+    margin: 20px auto;
+    box-sizing: border-box;
+    }
+
+    .register-button:disabled {
+    background-color: #d3d3d3;  
+    cursor: not-allowed;        
+    }
+
+
+    .register-section h1 {
+    color: black;
+    margin-bottom: 20px;
+    }
+
+    .register-section label {
+    display: block;
+    margin-bottom: 5px;
+    color: black;
+    font-weight: bold;
+    }
+
+    .register-section input {
+    width: 100%; 
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    }
+
+    .register-section button {
+    width: 100%; 
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #8a2e2e;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+    }
+
+    .register-section button:hover {
+    background-color: black;
+    color: white;
+    }
+
+    .register-section input,
+    .register-section select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    }
+
+    .errorMsg {
+    color: red;
+    margin-top: -10px; 
+    margin-bottom: 10px;
+    font-size: 14px;
+    }
+
+
+    </style>
+</body>
+</html>

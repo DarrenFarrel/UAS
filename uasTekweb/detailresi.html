@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Halo Admin</title>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <header class="bg-black p-4 fixed top-0 left-0 w-full z-50">
+        <nav class="flex justify-end">
+            <ul class="flex space-x-4">
+                <li><a href="detailresi.html" class="text-white hover:bg-white hover:text-black p-2 rounded">Detail Resi</a></li>
+                <li><a href="edit.html" class="text-white hover:bg-white hover:text-black p-2 rounded">User Admin</a></li>
+                <li><a href="logout.html" class="text-white hover:bg-white hover:text-black p-2 rounded">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="pt-20 p-8">
+        <div class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto mb-8">
+            <h2 class="text-center text-2xl font-bold mb-4">ENTRY NOMOR RESI</h2>
+            <form id="resiForm" action="entry_resi.php" method="POST">
+                <label for="tanggal" class="block font-semibold mb-1">Tanggal Resi:</label>
+                <input type="date" id="tanggal" name="tanggal" required class="w-full p-2 mb-4 border rounded">
+
+                <label for="nomor_resi" class="block font-semibold mb-1">Nomor Resi:</label>
+                <input type="text" id="nomor_resi" name="nomor_resi" required class="w-full p-2 mb-4 border rounded">
+
+                <button type="submit" class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Entry</button>
+            </form>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+            <table class="w-full table-auto">
+                <thead>
+                    <tr class="bg-gray-800 text-white">
+                        <th class="p-2">Tanggal Resi</th>
+                        <th class="p-2">Nomor Resi</th>
+                        <th class="p-2">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <div id="logModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Entry Log</h2>
+            <form id="logForm">
+                <input type="hidden" id="logNomorResi">
+                
+                <label for="logTanggal">Tanggal:</label>
+                <input type="date" id="logTanggal" required>
+
+                <label for="logKota">Kota:</label>
+                <input type="text" id="logKota" required>
+
+                <label for="logKeterangan">Keterangan:</label>
+                <textarea id="logKeterangan" required></textarea>
+
+                <button type="button" onclick="submitLog()">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('fetch_resi.php')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('tableBody');
+
+                    if (data.error) {
+                        console.error('Error:', data.error);
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.tanggal_resi}</td>
+                            <td>${item.nomor_resi}</td>
+                            <td>
+                                <button onclick="entryLog('${item.nomor_resi}')">Entry Log</button>
+                                <button onclick="deleteRow(this, ${item.id})">Delete</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        });
+
+        function deleteRow(button, id) {
+            if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+                fetch(`delete_resi.php?id=${id}`, { method: 'GET' })
+                    .then(response => response.text())
+                    .then(data => {
+                        if (data === 'success') {
+                            const row = button.closest('tr');
+                            row.remove();
+                        } else {
+                            alert('Gagal menghapus data');
+                        }
+                    });
+            }
+        }
+
+        function entryLog(nomorResi) {
+    document.getElementById('logNomorResi').value = nomorResi;
+    document.getElementById('logModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('logModal').style.display = 'none';
+}
+
+function submitLog() {
+    const nomorResi = document.getElementById('logNomorResi').value;
+    const tanggal = document.getElementById('logTanggal').value;
+    const kota = document.getElementById('logKota').value;
+    const keterangan = document.getElementById('logKeterangan').value;
+
+    fetch('entry_log.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `nomor_resi=${encodeURIComponent(nomorResi)}&tanggal=${encodeURIComponent(tanggal)}&kota=${encodeURIComponent(kota)}&keterangan=${encodeURIComponent(keterangan)}`
+    })
+    .then(response => response.text())
+    .then(data => {
+        if (data === 'success') {
+            alert('Log berhasil ditambahkan');
+            closeModal();
+        } else {
+            alert('Gagal menambahkan log');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('logModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+    </script>
+    <style>
+    
+        nav {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+    padding-bottom: 1%;
+    margin-top: 0;
+    background-color: black;
+}
+
+nav ul {
+    background-color: black;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    background-color: black;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+nav ul li a {
+    background-color: black;
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: white;
+    color: black;
+}
+
+header {
+    background-color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-left: 12px;
+    padding-right: 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 50;
+}
+
+.entry-container {
+    border: 2px solid black;
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.entry-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.entry-container label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.entry-container input[type="date"],
+.entry-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.entry-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.entry-log {
+    background-color: #007bff; 
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+button.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal-content input[type="date"],
+.modal-content input[type="text"],
+.modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.modal-content button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    </style>
+</body>
+</html>
